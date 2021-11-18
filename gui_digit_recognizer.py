@@ -24,7 +24,8 @@ model.eval()
 def predict_digit(img):
     #resize image to 28x28 pixels
     transform = transforms.Compose([transforms.Resize([28,28]),transforms.ToTensor(),transforms.Normalize((0.5,), (0.5,)), transforms.Grayscale(num_output_channels=1)])
-    #img = img.resize((28,28))
+    
+#img = img.resize((28,28))
     #convert rgb to grayscale
     #img = img.convert('L')
     #img = np.array(img)
@@ -33,10 +34,12 @@ def predict_digit(img):
     #img = img/255.0
     #predicting the class
     img_processed = transform(img)
+    img_processed = img_processed.view(1, 784)
     img_processed = img_processed.unsqueeze(0)
     
     res = nn.functional.softmax(model(img_processed)[0], dim=0)
     #res = model.predict([img])[0]
+    res=res.detach().numpy()
     print(np.argmax(res), max(res))
     return np.argmax(res), max(res)
 
